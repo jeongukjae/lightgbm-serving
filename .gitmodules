@@ -1,0 +1,9 @@
+[submodule "third_party/cpp-httplib"]
+	path = third_party/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib
+[submodule "third_party/googletest"]
+	path = third_party/googletest
+	url = https://github.com/google/googletest
+[submodule "third_party/LightGBM"]
+	path = third_party/LightGBM
+	url = https://github.com/microsoft/LightGBM
