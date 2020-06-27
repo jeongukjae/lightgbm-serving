@@ -1,0 +1,12 @@
+{
+    "config": [
+        {
+            "name": "TestModel1",
+            "path": "/path/to/model1"
+        },
+        {
+            "name": "TestModel2",
+            "path": "/path/to/model2"
+        }
+    ]
+}
