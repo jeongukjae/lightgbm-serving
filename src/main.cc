@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
 }
 
 cxxopts::ParseResult parseCLIArgs(int argc, char** argv) {
-  cxxopts::Options options("test", "A brief description");
+  cxxopts::Options options(argv[0], "A lightweight server for LightGBM");
 
   // clang-format off
   options.add_options()
