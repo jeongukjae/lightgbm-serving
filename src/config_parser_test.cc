@@ -24,6 +24,8 @@ TEST(config_parser, parse_config) {
   ASSERT_EQ(parser.getLength(), 2);
   ASSERT_EQ(parser.get(0).name, "TestModel1");
   ASSERT_EQ(parser.get(0).path, "/path/to/model1");
+  ASSERT_EQ(parser.get(0).nClasses, 1);
   ASSERT_EQ(parser.get(1).name, "TestModel2");
   ASSERT_EQ(parser.get(1).path, "/path/to/model2");
+  ASSERT_EQ(parser.get(1).nClasses, 5);
 }

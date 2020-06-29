@@ -26,6 +26,9 @@ void ConfigParser::parseModelConfig(const std::string path) {
   rapidjson::Document document;
   document.Parse(str.c_str());
 
+  if (!document.IsObject())
+    throw std::runtime_error("Root object is not an object");
+
   if (!document.HasMember("config") || !document["config"].IsArray())
     throw std::runtime_error("There is no config");
 

@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
     auto features = parse2DFloatArray(req.body);
     auto ncols = features.first;
     auto nrows = features.second.size();
-    auto nClasses = iterator->second->getConfig()->nClaass;
+    auto nClasses = iterator->second->getConfig()->nClasses;
 
     int64_t outputLength;
     double* outResult = new double[nClasses * nrows];

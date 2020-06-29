@@ -9,7 +9,7 @@ namespace lgbm_serving {
 struct ModelConfig {
   std::string name;
   std::string path;
-  size_t nClaass;
+  size_t nClasses;
 };
 
 class ConfigParser {
