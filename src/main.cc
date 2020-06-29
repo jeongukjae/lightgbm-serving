@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
     }
     auto ncols = features.first;
     auto nrows = features.second.size();
-    auto nClasses = iterator->second->getConfig()->nClasses;
+    auto nClasses = iterator->second->getNumClasses();
 
     if (ncols != iterator->second->getNumFeatures()) {
       res.status = 400;

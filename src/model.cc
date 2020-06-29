@@ -31,6 +31,7 @@ void Model::load(const std::string filename) {
   }
 
   LGBM_BoosterGetNumFeature(handle, &numFeatures);
+  LGBM_BoosterGetNumClasses(handle, &numClasses);
 }
 
 BoosterHandle& Model::getHandle() {
@@ -39,6 +40,10 @@ BoosterHandle& Model::getHandle() {
 
 int Model::getNumFeatures() const {
   return numFeatures;
+}
+
+int Model::getNumClasses() const {
+  return numClasses;
 }
 
 }  // namespace lgbm_serving

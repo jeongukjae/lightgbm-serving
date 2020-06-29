@@ -20,8 +20,7 @@ usage:
       "config": [
           {
               "name": "test-model",
-              "path": "/path/to/model",
-              "nClasses": 1
+              "path": "/path/to/model"
           }
       ]
   }

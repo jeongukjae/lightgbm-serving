@@ -20,11 +20,13 @@ class Model {
   void load(const std::string filename);
   BoosterHandle& getHandle();
   int getNumFeatures() const;
+  int getNumClasses() const;
 
  private:
   BoosterHandle handle;
   const ModelConfig* config;
   int numFeatures;
+  int numClasses;
 };
 
 }  // namespace lgbm_serving
