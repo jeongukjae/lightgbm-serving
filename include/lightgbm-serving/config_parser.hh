@@ -1,5 +1,5 @@
-#ifndef __LGBM_SERVING_HH__
-#define __LGBM_SERVING_HH__
+#ifndef __LGBM_SERVINGP_CONFIG_PARSER_HH__
+#define __LGBM_SERVINGP_CONFIG_PARSER_HH__
 
 #include <string>
 #include <vector>
@@ -9,6 +9,7 @@ namespace lgbm_serving {
 struct ModelConfig {
   std::string name;
   std::string path;
+  size_t nClaass;
 };
 
 class ConfigParser {
@@ -33,4 +34,4 @@ class ConfigParser {
 
 }  // namespace lgbm_serving
 
-#endif  // __LGBM_SERVING_HH__
+#endif  // __LGBM_SERVINGP_CONFIG_PARSER_HH__

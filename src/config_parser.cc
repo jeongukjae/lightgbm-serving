@@ -30,13 +30,13 @@ void ConfigParser::parseModelConfig(const std::string path) {
     throw std::runtime_error("There is no config");
 
   for (auto& value : document["config"].GetArray()) {
-    if (!value.HasMember("name") || !value.HasMember("path"))
-      throw std::runtime_error("Cannot get attribute `name` or `path`");
+    if (!value.HasMember("name") || !value.HasMember("path") || !value.HasMember("nClasses"))
+      throw std::runtime_error("Cannot get attribute `nClasses`, `name` or `path`");
 
-    if (!value["name"].IsString() || !value["path"].IsString())
-      throw std::runtime_error("Name or path is not a string");
+    if (!value["name"].IsString() || !value["path"].IsString() || !value["nClasses"].IsUint())
+      throw std::runtime_error("Name or path is not a string, or nClasses is not a UInt");
 
-    ModelConfig config{value["name"].GetString(), value["path"].GetString()};
+    ModelConfig config{value["name"].GetString(), value["path"].GetString(), value["nClasses"].GetUint()};
     configs.push_back(config);
   }
 }
