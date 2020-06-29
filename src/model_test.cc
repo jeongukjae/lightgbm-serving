@@ -1,4 +1,5 @@
 #include "model.hh"
+
 #include "gtest/gtest.h"
 
 TEST(model, test_loading_model) {
