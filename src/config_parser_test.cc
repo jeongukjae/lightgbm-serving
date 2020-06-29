@@ -1,4 +1,4 @@
-#include "lightgbm-serving/config_parser.hh"
+#include "config_parser.hh"
 
 #include "gtest/gtest.h"
 

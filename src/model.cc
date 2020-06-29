@@ -1,4 +1,4 @@
-#include "lightgbm-serving/model.hh"
+#include "model.hh"
 
 #include "LightGBM/c_api.h"
 

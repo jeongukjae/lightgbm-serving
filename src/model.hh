@@ -4,7 +4,7 @@
 #include <string>
 
 #include "LightGBM/c_api.h"
-#include "lightgbm-serving/config_parser.hh"
+#include "config_parser.hh"
 
 namespace lgbm_serving {
 

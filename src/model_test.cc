@@ -1,1 +1,1 @@
-#include "lightgbm-serving/model.hh"
+#include "model.hh"

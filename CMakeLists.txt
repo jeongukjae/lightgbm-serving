@@ -12,8 +12,6 @@ set(TEST_CODE
     src/config_parser_test.cc
     src/model_test.cc)
 
-include_directories(./include)
-
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/LightGBM")
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/rapidjson")
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/cpp-httplib")

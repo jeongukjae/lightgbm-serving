@@ -3,10 +3,10 @@
 #include <map>
 #include <string>
 
+#include "config_parser.hh"
 #include "cxxopts.hpp"
 #include "httplib.h"
-#include "lightgbm-serving/config_parser.hh"
-#include "lightgbm-serving/model.hh"
+#include "model.hh"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
