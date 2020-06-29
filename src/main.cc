@@ -69,14 +69,30 @@ int main(int argc, char** argv) {
 
     auto iterator = models.find(modelName);
     if (iterator == models.end()) {
+      res.status = 400;
       res.set_content("{\"error\": \"There is no model\"}", "application/json");
       return;
     }
 
-    auto features = parse2DFloatArray(req.body);
+    std::pair<size_t, std::vector<float*>> features;
+    try {
+      features = parse2DFloatArray(req.body);
+    } catch (...) {
+      res.status = 400;
+      res.set_content("{\"error\": \"Cannot parse json array\"}", "application/json");
+      return;
+    }
     auto ncols = features.first;
     auto nrows = features.second.size();
     auto nClasses = iterator->second->getConfig()->nClasses;
+
+    if (ncols != iterator->second->getNumFeatures()) {
+      res.status = 400;
+      res.set_content("{\"error\": \"invalid shape\"}", "application/json");
+      for (const auto* feat : features.second)
+        delete[] feat;
+      return;
+    }
 
     int64_t outputLength;
     double* outResult = new double[nClasses * nrows];
@@ -84,6 +100,7 @@ int main(int argc, char** argv) {
                                nrows, ncols, C_API_PREDICT_NORMAL, 0, "", &outputLength, outResult);
 
     if (outputLength != nrows * nClasses) {
+      res.status = 400;
       res.set_content("{\"error\": \"invalid shape\"}", "application/json");
       for (const auto* feat : features.second)
         delete[] feat;

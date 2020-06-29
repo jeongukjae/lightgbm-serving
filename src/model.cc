@@ -29,10 +29,16 @@ void Model::load(const std::string filename) {
   if (LGBM_BoosterCreateFromModelfile(filename.c_str(), &numIterations, &handle) != 0) {
     throw std::runtime_error("cannot load file from " + filename);
   }
+
+  LGBM_BoosterGetNumFeature(handle, &numFeatures);
 }
 
 BoosterHandle& Model::getHandle() {
   return handle;
+}
+
+int Model::getNumFeatures() const {
+  return numFeatures;
 }
 
 }  // namespace lgbm_serving
