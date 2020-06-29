@@ -95,16 +95,16 @@ int main(int argc, char** argv) {
     }
 
     int64_t outputLength;
-    double* outResult = new double[nClasses * nrows];
+    std::vector<double> outResult;
+    outResult.resize(nClasses * nrows, 0.0);
     LGBM_BoosterPredictForMats(iterator->second->getHandle(), (const void**)features.second.data(), C_API_DTYPE_FLOAT32,
-                               nrows, ncols, C_API_PREDICT_NORMAL, 0, "", &outputLength, outResult);
+                               nrows, ncols, C_API_PREDICT_NORMAL, 0, "", &outputLength, outResult.data());
 
     if (outputLength != nrows * nClasses) {
       res.status = 400;
       res.set_content("{\"error\": \"invalid shape\"}", "application/json");
       for (const auto* feat : features.second)
         delete[] feat;
-      delete[] outResult;
       return;
     }
 
@@ -131,11 +131,13 @@ int main(int argc, char** argv) {
 
     for (const auto* feat : features.second)
       delete[] feat;
-    delete[] outResult;
   });
 
   std::cout << "Running server on " << host << ":" << port << std::endl;
   server.listen(args["host"].as<std::string>().c_str(), args["port"].as<size_t>());
+
+  for (const auto item : models)
+    delete item.second;
 
   return 0;
 }
