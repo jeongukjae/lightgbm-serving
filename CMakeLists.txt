@@ -1,16 +1,18 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(lightGBM-serving VERSION 0.1.0 LANGUAGES CXX)
+project(lightGBM-serving VERSION 0.1.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCE_CODE
     src/config_parser.cc
-    src/model.cc)
+    src/model.cc
+    src/server.cc)
 
 set(TEST_CODE
     src/config_parser_test.cc
-    src/model_test.cc)
+    src/model_test.cc
+    src/server_test.cc)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/LightGBM")
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/rapidjson")

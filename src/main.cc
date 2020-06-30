@@ -7,14 +7,10 @@
 #include "cxxopts.hpp"
 #include "httplib.h"
 #include "model.hh"
-#include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
+#include "server.hh"
 
 cxxopts::ParseResult parseCLIArgs(int argc, char** argv);
 std::string getServerStat(std::map<std::string, lgbm_serving::Model*> models);
-std::pair<size_t, std::vector<float*>> parse2DFloatArray(const std::string& payload);
-std::string serializeModelOutput(int nrows, int nClasses, double* outResult);
 
 int main(int argc, char** argv) {
   auto args = parseCLIArgs(argc, argv);
@@ -62,7 +58,7 @@ int main(int argc, char** argv) {
   httplib::Server server;
 
   server.Get("/v1/stat", [models](const httplib::Request& req, httplib::Response& res) {
-    res.set_content(getServerStat(models), "application/json");
+    res.set_content(lgbm_serving::getServerStat(models), "application/json");
   });
 
   server.Post(R"(/v1/models/([a-zA-Z0-9]+):predict)", [models](const httplib::Request& req, httplib::Response& res) {
@@ -77,7 +73,7 @@ int main(int argc, char** argv) {
 
     std::pair<size_t, std::vector<float*>> features;
     try {
-      features = parse2DFloatArray(req.body);
+      features = lgbm_serving::parse2DFloatArray(req.body);
     } catch (...) {
       res.status = 400;
       res.set_content("{\"error\": \"Cannot parse json array\"}", "application/json");
@@ -98,14 +94,14 @@ int main(int argc, char** argv) {
     int64_t outputLength;
     std::vector<double> outResult;
     outResult.resize(nClasses * nrows, 0.0);
-    LGBM_BoosterPredictForMats(iterator->second->getHandle(), (const void**)features.second.data(), C_API_DTYPE_FLOAT32,
-                               nrows, ncols, C_API_PREDICT_NORMAL, 0, "", &outputLength, outResult.data());
+    LGBM_BoosterPredictForMats(iterator->second->getHandle(), (const void**)features.second.data(), C_API_DTYPE_FLOAT32, nrows, ncols,
+                               C_API_PREDICT_NORMAL, 0, "", &outputLength, outResult.data());
 
     if (outputLength != nrows * nClasses) {
       res.status = 400;
       res.set_content("{\"error\": \"invalid shape\"}", "application/json");
     } else {
-      res.set_content(serializeModelOutput(nrows, nClasses, outResult.data()), "application/json");
+      res.set_content(lgbm_serving::serializeModelOutput(nrows, nClasses, outResult.data()), "application/json");
     }
 
     for (const auto* feat : features.second)
@@ -140,76 +136,4 @@ cxxopts::ParseResult parseCLIArgs(int argc, char** argv) {
   }
 
   return args;
-}
-
-std::string getServerStat(std::map<std::string, lgbm_serving::Model*> models) {
-  rapidjson::Document document;
-  document.AddMember("num_models", (int)models.size(), document.GetAllocator());
-
-  rapidjson::StringBuffer buffer;
-  buffer.Clear();
-
-  rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-  document.Accept(writer);
-
-  return std::string(buffer.GetString());
-}
-
-std::pair<size_t, std::vector<float*>> parse2DFloatArray(const std::string& payload) {
-  std::vector<float*> features;
-  size_t ncol;
-
-  rapidjson::Document document;
-  document.Parse(payload.c_str());
-
-  if (!document.IsArray())
-    throw std::runtime_error("Cannot parse");
-
-  auto array = document.GetArray();
-  features.reserve(array.Size());
-
-  for (const auto& value : array) {
-    if (!value.IsArray() || (features.size() != 0 && value.GetArray().Size() != ncol)) {
-      for (const auto* feat : features)
-        delete[] feat;
-      features.clear();
-
-      throw std::runtime_error("Cannot parse");
-    }
-
-    if (features.size() == 0)
-      ncol = value.GetArray().Size();
-
-    auto array = value.GetArray();
-    float* feature = new float[ncol];
-    for (size_t i = 0; i < ncol; i++)
-      feature[i] = array[i].GetFloat();
-
-    features.push_back(feature);
-  }
-
-  return std::make_pair(ncol, features);
-}
-
-std::string serializeModelOutput(int nrows, int nClasses, double* outResult) {
-  rapidjson::Document document;
-  document.SetArray();
-
-  for (size_t i = 0; i < nrows; i++) {
-    if (nClasses == 1) {
-      document.PushBack(outResult[i], document.GetAllocator());
-    } else {
-      rapidjson::Value value(rapidjson::kArrayType);
-      for (size_t j = 0; j < nClasses; j++) {
-        value.PushBack(outResult[i], document.GetAllocator());
-      }
-      document.PushBack(value, document.GetAllocator());
-    }
-  }
-
-  rapidjson::StringBuffer buffer;
-  buffer.Clear();
-  rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-  document.Accept(writer);
-  return std::string(buffer.GetString());
 }
