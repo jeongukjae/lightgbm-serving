@@ -13,6 +13,8 @@ cxxopts::ParseResult parseCLIArgs(int argc, char** argv);
 std::string getServerStat(std::map<std::string, lgbm_serving::Model*> models);
 
 int main(int argc, char** argv) {
+  //
+  // parse cli arguments
   auto args = parseCLIArgs(argc, argv);
 
   std::string configFilePath = args["config"].as<std::string>();
@@ -21,6 +23,8 @@ int main(int argc, char** argv) {
     return 1;
   }
 
+  //
+  // parse model config
   lgbm_serving::ConfigParser parser;
   try {
     parser.parseModelConfig(configFilePath);
@@ -29,6 +33,8 @@ int main(int argc, char** argv) {
     return 1;
   }
 
+  //
+  // load models
   size_t numModel = parser.getLength();
   if (numModel == 0) {
     std::cerr << "Config file contains nothing." << std::endl;
@@ -52,10 +58,13 @@ int main(int argc, char** argv) {
     models.insert(std::make_pair(iterator->name, model));
   }
 
+  //
+  // launch web server
   std::string host = args["host"].as<std::string>();
   size_t port = args["port"].as<size_t>();
 
   httplib::Server server;
+  server.new_task_queue = [args] { return new httplib::ThreadPool(args["listener-threads"].as<size_t>()); };
 
   server.Get("/v1/stat", [models](const httplib::Request& req, httplib::Response& res) {
     res.set_content(lgbm_serving::getServerStat(models), "application/json");
@@ -71,6 +80,7 @@ int main(int argc, char** argv) {
       return;
     }
 
+    // parse payload
     std::pair<size_t, std::vector<float*>> features;
     try {
       features = lgbm_serving::parse2DFloatArray(req.body);
@@ -91,6 +101,7 @@ int main(int argc, char** argv) {
       return;
     }
 
+    // inference
     int64_t outputLength;
     std::vector<double> outResult;
     outResult.resize(nClasses * nrows, 0.0);
@@ -111,6 +122,7 @@ int main(int argc, char** argv) {
   std::cout << "Running server on " << host << ":" << port << std::endl;
   server.listen(args["host"].as<std::string>().c_str(), args["port"].as<size_t>());
 
+  // clean up
   for (const auto item : models)
     delete item.second;
 
@@ -125,6 +137,7 @@ cxxopts::ParseResult parseCLIArgs(int argc, char** argv) {
     ("host", "Host", cxxopts::value<std::string>()->default_value("localhost"))
     ("p,port", "Port", cxxopts::value<size_t>()->default_value("8080"))
     ("c,config", "Model Config File", cxxopts::value<std::string>()->default_value(""))
+    ("l,listener-threads", "Num of threads of listener", cxxopts::value<size_t>()->default_value("4"))
     ("h,help", "Print usage");
   // clang-format on
 
