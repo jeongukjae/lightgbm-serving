@@ -4,17 +4,10 @@ A lightweight http server for lightGBM that support multi-model server.
 
 ## Installation
 
-## Using docker
+### Using docker
 
 ```sh
 $ docker pull jeongukjae/lightgbm-serving
-$ docker run --rm -it \
-  -v PATH_TO_MODEL:/models \
-  -v PATH_TO_CONFIGL:/config.json \
-  jeongukjae/lightgbm-serving -c /config.json
-Found 1 configs.
-Loaded test model from /models/model.lgbm.
-Running server on localhost:8080
 ```
 
 ### Build from source code
