@@ -10,6 +10,8 @@ RUN git submodule update --init --recursive && \
 RUN cd build && ./run-test
 
 FROM alpine:3.12.0
+LABEL maintainer="jeongukjae@gmail.com"
+
 RUN apk --no-cache add musl libgcc libstdc++ libgomp
 WORKDIR /
 COPY --from=builder /workspace/build/lightgbm-server .
