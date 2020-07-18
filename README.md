@@ -63,6 +63,24 @@ The config file should be json file, and should be structed like below.
 $ ./lightgbm-serving --host 0.0.0.0 --port 8080 --config path-to-config.json
 ```
 
+or use docker
+
+```
+$ docker run --rm -it \
+  -v PATH_TO_MODEL:/models \
+  -v PATH_TO_CONFIGL:/config.json \
+  jeongukjae/lightgbm-serving -c /config.json
+Found 1 configs.
+Loaded test model from /models/model.lgbm.
+Running server on localhost:8080
+```
+
+### View server status
+
+```sh
+$ curl http://localhost:8080/v1/stat
+```
+
 ### Inference
 
 ```sh
