@@ -9,11 +9,10 @@ namespace lgbm_serving {
 
 std::string getServerStat(std::map<std::string, lgbm_serving::Model*> models) {
   rapidjson::Document document;
+  document.SetObject();
   document.AddMember("num_models", (int)models.size(), document.GetAllocator());
 
   rapidjson::StringBuffer buffer;
-  buffer.Clear();
-
   rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
   document.Accept(writer);
 
