@@ -14,6 +14,8 @@ set(TEST_CODE
     src/model_test.cc
     src/server_test.cc)
 
+set(RAPIDJSON_BUILD_TESTS OFF CACHE BOOL "Turn off building rapidjson test" FORCE)
+
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/LightGBM")
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/rapidjson")
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/cpp-httplib")
