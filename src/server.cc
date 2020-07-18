@@ -1,5 +1,7 @@
 #include "server.hh"
 
+#include <stdexcept>
+
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
 

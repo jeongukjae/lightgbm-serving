@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 #include "rapidjson/document.h"
 

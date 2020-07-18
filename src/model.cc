@@ -1,5 +1,7 @@
 #include "model.hh"
 
+#include <stdexcept>
+
 #include "LightGBM/c_api.h"
 
 namespace lgbm_serving {
