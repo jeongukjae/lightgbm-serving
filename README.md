@@ -50,17 +50,17 @@ The config file should be json file, and should be structed like below.
 $ ./lightgbm-serving --host 0.0.0.0 --port 8080 --config path-to-config.json
 ```
 
-### Infreence
+### Inference
 
 ```sh
 $ curl http://localhost:8080/v1/models/{MODEL_NAME_IN_CONFIG_FILE}:predict -d "[[1,2,3,4,5], [1,2,3,4,5]]"
 ```
 
-**Server accepts only 2d float array payload.**
+**###Payload should be 2d array that shape of is `(batch size, num features)`.###**
 
 #### Inference Results
 
-If a parameter `num_classes` of model is 1, then server will return 1d array with shape `(batch size, )` like `[0.5, 0.3, 0.2, ...]`. If not, server will return 2d array with shape `(batch size, num classes)` like `[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0]]`.
+If a parameter `num_classes` of model is 1, then server will return 1d array with shape `(batch size, )` like `[0.5,0.3,0.2]`. If not, server will return 2d array with shape `(batch size, num classes)` like `[[1.0,2.0,3.0,4.0],[5.0,6.0,7.0,8.0]]`.
 
 #### When error occured
 
