@@ -9,18 +9,25 @@
 #include "httplib.h"
 #include "model.hh"
 #include "server.hh"
+#include "spdlog/spdlog.h"
 
 cxxopts::ParseResult parseCLIArgs(int argc, char** argv);
 std::string getServerStat(std::map<std::string, lgbm_serving::Model*> models);
 
 int main(int argc, char** argv) {
+  if (std::getenv("LGBM_DEBUG"))
+    spdlog::set_level(spdlog::level::debug);
+
   //
   // parse cli arguments
   auto args = parseCLIArgs(argc, argv);
+  spdlog::debug("CLI Arguments: ");
+  for (auto argument : args.arguments())
+    spdlog::debug(" - {} : {}", argument.key(), argument.value());
 
   std::string configFilePath = args["config"].as<std::string>();
   if (configFilePath.empty()) {
-    std::cerr << "Cannot parse config file." << std::endl;
+    spdlog::error("Cannot parse config file.");
     return 1;
   }
 
@@ -30,7 +37,7 @@ int main(int argc, char** argv) {
   try {
     parser.parseModelConfig(configFilePath);
   } catch (std::runtime_error& error) {
-    std::cerr << "Cannot parse config file: " << error.what() << std::endl;
+    spdlog::error("Cannot parse config file: {}", error.what());
     return 1;
   }
 
@@ -38,11 +45,11 @@ int main(int argc, char** argv) {
   // load models
   size_t numModel = parser.getLength();
   if (numModel == 0) {
-    std::cerr << "Config file contains nothing." << std::endl;
+    spdlog::error("Config file contains nothing.");
     return 1;
   }
 
-  std::cout << "Found " << numModel << " configs." << std::endl;
+  spdlog::info("Found {} configs.", numModel);
   std::map<std::string, lgbm_serving::Model*> models;
   for (auto iterator = parser.begin(); iterator < parser.end(); iterator++) {
     lgbm_serving::Model* model = new lgbm_serving::Model;
@@ -51,11 +58,11 @@ int main(int argc, char** argv) {
     try {
       model->load(iterator->path);
     } catch (std::runtime_error& error) {
-      std::cerr << "Cannot load model: " << error.what() << std::endl;
+      spdlog::error("Cannot load model: {}", error.what());
       return 1;
     }
 
-    std::cout << "Loaded " << iterator->name << " model from " << iterator->path << "." << std::endl;
+    spdlog::info("Loaded {} model from '{}'.", iterator->name, iterator->path);
     models.insert(std::make_pair(iterator->name, model));
   }
 
@@ -66,6 +73,10 @@ int main(int argc, char** argv) {
 
   httplib::Server server;
   server.new_task_queue = [args] { return new httplib::ThreadPool(args["listener-threads"].as<size_t>()); };
+
+  server.set_logger([](const httplib::Request& req, const httplib::Response& res) {
+    spdlog::debug("{} {} HTTP/{} {} - from {}", req.method, req.path, req.version, res.status, req.remote_addr);
+  });
 
   server.Get("/v1/stat", [models](const httplib::Request& req, httplib::Response& res) {
     res.set_content(lgbm_serving::getServerStat(models), "application/json");
@@ -120,7 +131,7 @@ int main(int argc, char** argv) {
       delete[] feat;
   });
 
-  std::cout << "Running server on " << host << ":" << port << std::endl;
+  spdlog::info("Running server on http://{}:{}", host, port);
   server.listen(args["host"].as<std::string>().c_str(), args["port"].as<size_t>());
 
   // clean up
