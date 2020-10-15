@@ -19,6 +19,7 @@ $ mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
 $ make
 $ ./lightgbm-server --help
 A lightweight server for LightGBM
+
 Usage:
   ./lightgbm-server [OPTION...]
 
@@ -26,6 +27,7 @@ Usage:
   -p, --port arg              Port (default: 8080)
   -c, --config arg            Model Config File (default: "")
   -l, --listener-threads arg  Num of threads of listener (default: 4)
+  -v, --version               Show version string and infos and exit
   -h, --help                  Print usage
 ```
 
