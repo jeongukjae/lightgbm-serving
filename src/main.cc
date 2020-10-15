@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
     res.set_content(lgbm_serving::getServerStat(models), "application/json");
   });
 
-  server.Post(R"(/v1/models/([a-zA-Z0-9]+):predict)", [models](const httplib::Request& req, httplib::Response& res) {
+  server.Post(R"(/v1/models/([a-zA-Z0-9\-_]+):predict)", [models](const httplib::Request& req, httplib::Response& res) {
     std::string modelName = req.matches[1];
 
     auto iterator = models.find(modelName);
