@@ -4,7 +4,7 @@ import pandas as pd
 import sklearn
 
 np.random.seed(30)
-n_columns = 40
+n_columns = 5
 n_rows = 10000
 
 X = pd.DataFrame(np.random.uniform(-100,100,size=(n_rows, n_columns)), columns=list(range(n_columns)))
