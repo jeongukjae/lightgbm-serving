@@ -1,5 +1,7 @@
 # lightgbm-serving
 
+![Test Docker Image](https://github.com/jeongukjae/lightgbm-serving/workflows/Test%20Docker%20Image/badge.svg)
+
 A lightweight http server for lightGBM that support multi-model server.
 
 ## Installation
