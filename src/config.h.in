@@ -1,0 +1,6 @@
+#ifndef __LGMB_CONFIG_H_IN__
+#define __LGMB_CONFIG_H_IN__
+
+#define PROJECT_VERSION "@PROJECT_VERSION@"
+
+#endif  // __LGMB_CONFIG_H_IN__S

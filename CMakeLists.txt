@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(lightGBM-serving VERSION 0.1.1 LANGUAGES CXX)
+project(lightGBM-serving VERSION "0.1.2" LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -14,6 +14,8 @@ set(TEST_CODE
     src/model_test.cc
     src/server_test.cc)
 
+configure_file(src/config.h.in config.h)
+
 set(RAPIDJSON_BUILD_TESTS OFF CACHE BOOL "Turn off building rapidjson test" FORCE)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/LightGBM")
@@ -26,6 +28,7 @@ include_directories("${PROJECT_SOURCE_DIR}/third_party/cpp-httplib")
 include_directories("${PROJECT_SOURCE_DIR}/third_party/cxxopts/include")
 include_directories("${PROJECT_SOURCE_DIR}/third_party/LightGBM/include")
 include_directories("${PROJECT_SOURCE_DIR}/third_party/spdlog/include")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}") # for config.h
 
 add_executable(lightgbm-server ${SOURCE_CODE} src/main.cc)
 target_link_libraries(lightgbm-server _lightgbm)

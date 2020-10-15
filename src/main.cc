@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "config.h"
 #include "config_parser.hh"
 #include "cxxopts.hpp"
 #include "httplib.h"
@@ -150,6 +151,7 @@ cxxopts::ParseResult parseCLIArgs(int argc, char** argv) {
     ("p,port", "Port", cxxopts::value<size_t>()->default_value("8080"))
     ("c,config", "Model Config File", cxxopts::value<std::string>()->default_value(""))
     ("l,listener-threads", "Num of threads of listener", cxxopts::value<size_t>()->default_value("4"))
+    ("v,version", "Show version string and infos and exit")
     ("h,help", "Print usage");
   // clang-format on
 
@@ -157,6 +159,11 @@ cxxopts::ParseResult parseCLIArgs(int argc, char** argv) {
 
   if (args.count("help")) {
     std::cout << options.help() << std::endl;
+    std::exit(0);
+  }
+
+  if (args.count("version")) {
+    std::cout << "LightGBM Serving " PROJECT_VERSION ", MIT License, https://github.com/jeongukjae/lightgbm-serving" << std::endl;
     std::exit(0);
   }
 
