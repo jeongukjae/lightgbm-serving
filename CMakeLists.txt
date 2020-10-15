@@ -25,6 +25,7 @@ include_directories("${PROJECT_SOURCE_DIR}/third_party/rapidjson/include")
 include_directories("${PROJECT_SOURCE_DIR}/third_party/cpp-httplib")
 include_directories("${PROJECT_SOURCE_DIR}/third_party/cxxopts/include")
 include_directories("${PROJECT_SOURCE_DIR}/third_party/LightGBM/include")
+include_directories("${PROJECT_SOURCE_DIR}/third_party/spdlog/include")
 
 add_executable(lightgbm-server ${SOURCE_CODE} src/main.cc)
 target_link_libraries(lightgbm-server _lightgbm)
