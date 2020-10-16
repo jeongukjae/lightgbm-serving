@@ -17,6 +17,7 @@ $ docker pull docker.pkg.github.com/jeongukjae/lightgbm-serving/lightgbm-serving
 ```sh
 $ git clone https://github.com/jeongukjae/lightgbm-serving
 $ cd lightgbm-serving
+$ git submodule update --init --recursive
 $ mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
 $ make
 $ ./lightgbm-server --help
